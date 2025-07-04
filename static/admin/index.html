@@ -1,13 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex" />
-    <title>Content Manager</title>
-  </head>
-  <body>
-    <!-- Include the script that builds the page and powers Decap CMS -->
-    <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>内容管理后台</title>
+
+  <!-- 
+    关键修复 (第一部分): 我们手动引入 Netlify Identity Widget 的官方脚本。
+    这个脚本必须在 Sveltia CMS 脚本之前加载。
+  -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
+
+  <!-- Sveltia CMS 的脚本保持不变，也使用 defer -->
+  <script src="https://unpkg.com/@sveltia/cms@latest/dist/sveltia-cms.js" defer></script>
+
+</head>
+<body>
+  <!-- 
+    关键修复 (第二部分): 添加一个初始化脚本，确保在 CMS 运行前，
+    Identity Widget 已经准备就绪。
+  -->
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', user => {
+        if (!user) {
+          window.netlifyIdentity.on('login', () => {
+            document.location.reload();
+          });
+        }
+      });
+    }
+  </script>
+</body>
 </html>
