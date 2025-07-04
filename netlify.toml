@@ -1,0 +1,16 @@
+# Netlify 配置文件
+# 这个文件会覆盖大部分 UI 设置，确保构建环境的一致性。
+
+[build]
+  # 构建命令
+  command = "hugo"
+  # 构建后发布的目录
+  publish = "public"
+
+  [build.environment]
+    # 设置 Hugo 版本 (请根据您的实际情况修改)
+    HUGO_VERSION = "0.147.8"
+    GIT_SUBMODULES_PULL = "true"
+
+# [[plugins]]
+#  package = "@netlify/plugin-sitemap"

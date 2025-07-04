@@ -5,14 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>内容管理后台</title>
 
-  <!-- 
-    关键修复：我们手动、明确地引入两个必需的脚本。
-    defer 属性是这里的核心，它会保证：
-    1. 脚本被异步下载，不阻塞页面。
-    2. 脚本会【严格按照它们在代码中的出现顺序】来执行。
-    这意味着 netlify-identity-widget.js 必定会先于 sveltia-cms.js 执行。
-  -->
-
   <!-- 1. 首先加载并执行 Netlify Identity Widget -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
 
@@ -21,10 +13,5 @@
 
 </head>
 <body>
-  <!-- 
-    Body 部分留空。
-    Sveltia CMS 脚本在执行时，会自动查找同目录下的 config.yml 文件，
-    并接管整个页面，无需任何额外的初始化代码。
-  -->
 </body>
 </html>

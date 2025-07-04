@@ -6,7 +6,7 @@
 #    这是最简单、最推荐的方式。
 backend:
   name: git-gateway # 使用 Netlify 的认证代理
-  branch: main      # 你的代码主分支 (可能是 main 或 master)
+  branch: main      
 
 # 2. 媒体文件配置 (Media)
 #    用户在后台上传的图片等文件会放在这里。
