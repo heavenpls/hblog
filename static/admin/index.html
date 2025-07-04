@@ -6,30 +6,25 @@
   <title>内容管理后台</title>
 
   <!-- 
-    关键修复 (第一部分): 我们手动引入 Netlify Identity Widget 的官方脚本。
-    这个脚本必须在 Sveltia CMS 脚本之前加载。
+    关键修复：我们手动、明确地引入两个必需的脚本。
+    defer 属性是这里的核心，它会保证：
+    1. 脚本被异步下载，不阻塞页面。
+    2. 脚本会【严格按照它们在代码中的出现顺序】来执行。
+    这意味着 netlify-identity-widget.js 必定会先于 sveltia-cms.js 执行。
   -->
+
+  <!-- 1. 首先加载并执行 Netlify Identity Widget -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
 
-  <!-- Sveltia CMS 的脚本保持不变，也使用 defer -->
+  <!-- 2. 然后加载并执行 Sveltia CMS -->
   <script src="https://unpkg.com/@sveltia/cms@latest/dist/sveltia-cms.js" defer></script>
 
 </head>
 <body>
   <!-- 
-    关键修复 (第二部分): 添加一个初始化脚本，确保在 CMS 运行前，
-    Identity Widget 已经准备就绪。
+    Body 部分留空。
+    Sveltia CMS 脚本在执行时，会自动查找同目录下的 config.yml 文件，
+    并接管整个页面，无需任何额外的初始化代码。
   -->
-  <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', user => {
-        if (!user) {
-          window.netlifyIdentity.on('login', () => {
-            document.location.reload();
-          });
-        }
-      });
-    }
-  </script>
 </body>
 </html>
