@@ -1,0 +1,29 @@
+# Sveltia CMS 配置文件示例
+# ----------------------------------------------------
+
+# 1. 后端配置 (Backend)
+#    我们使用 Netlify 的 Git Gateway 服务来处理 GitHub 认证。
+#    这是最简单、最推荐的方式。
+backend:
+  name: git-gateway # 使用 Netlify 的认证代理
+  branch: main      # 你的代码主分支 (可能是 main 或 master)
+
+# 2. 媒体文件配置 (Media)
+#    用户在后台上传的图片等文件会放在这里。
+media_folder: "static/uploads" # 图片存储在 Git 仓库的路径
+public_folder: "/uploads"      # 最终在网站上访问图片的 URL 路径
+
+# 3. 内容集合 (Collections)
+#    定义你的内容类型。这里我们只定义一个 "博客文章 (posts)" 集合。
+collections:
+  - name: "posts" # 集合的唯一标识符
+    label: "博客文章" # 在后台界面上显示的名称
+    folder: "content/posts" # Markdown 文件存储的目录
+    create: true # 允许在后台创建新文章
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # 新文章的文件名格式
+    fields: # 定义文章的字段 (对应 Hugo 的 Front Matter)
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "发布日期", name: "date", widget: "datetime" }
+      - { label: "是否草稿", name: "draft", widget: "boolean", default: true }
+      - { label: "标签", name: "tags", widget: "list", required: false }
+      - { label: "正文", name: "body", widget: "markdown" }

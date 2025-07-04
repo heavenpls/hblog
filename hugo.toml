@@ -1,0 +1,103 @@
+# ------------------------------------------------------
+# 基础配置 (Hugo 核心)
+# ------------------------------------------------------
+
+baseURL = "https://example.org/"  # 【重要】将来部署网站时，这里要换成你的最终域名
+languageCode = "zh-cn"            # 网站语言，中文为 zh-cn
+title = "Code & JVM | 一名全栈开发者的博客"              # 网站主标题，会显示在浏览器标签页上
+theme = "PaperMod"                # 【重要】指定使用的主题，必须和你安装的主题文件夹名一致
+
+# 这是新的、正确的配置方式
+[pagination]
+  pageSize = 5
+
+# ------------------------------------------------------
+# 主题配置 (PaperMod 主题特有)
+# 这里的配置项由主题定义，不同主题会不一样
+# ------------------------------------------------------
+
+[params]
+  # --- 常规信息 ---
+  author = "Heaven"
+  description = "一名专注于 Java/Spring Boot 后端和 Vue 3 前端的全栈开发者。在这里分享技术实践、源码思考、踩坑记录以及全栈路上的点滴成长。"
+  # dateFormat = "January 2, 2006" # 自定义日期格式 (可选)
+  defaultTheme = "auto" # 默认主题模式: auto, light, dark
+  ShowReadingTime = true    # 显示文章阅读时间
+  ShowShareButtons = true   # 显示分享按钮
+  ShowPostNavLinks = true   # 显示上一篇/下一篇文章导航
+  ShowBreadCrumbs = true    # 显示路径导航 (面包屑)
+  ShowCodeCopyButtons = true # 代码块显示复制按钮
+  ShowWordCount = true      # 显示文章字数
+  ShowRssButtonInSectionTermList = true # 在分类和标签列表页显示 RSS 按钮
+
+  # --- 首页（Profile Mode）配置 ---
+  # 这是 PaperMod 的一个特色功能，可以在首页展示一个个人简介卡片
+  [params.profileMode]
+    enabled = true                           
+    title = "Code & JVM | 一名全栈开发者的博客" #卡片上的大标题 (可以和网站标题一样)
+    subtitle = "后端用 Spring Boot 构筑坚实服务，前端用 Vue 3 创造流畅体验。在这里，代码与思考交汇。" # 副标题
+    imageUrl = "/images/profile.png"          # 【重要】你的头像图片路径
+    imageTitle = "我的头像"                   # 图片的 alt 文本
+    imageWidth = 120                          # 图片宽度 (像素)
+    imageHeight = 120                         # 图片高度 (像素)
+    
+    # 首页简介下方的按钮
+    [[params.profileMode.buttons]]
+      name = "文章"
+      url = "/posts" # 链接到你的文章列表页
+    [[params.profileMode.buttons]]
+      name = "关于"
+      url = "/about" # 链接到你的“关于”页面
+
+  # --- 社交链接图标 ---
+  # 在这里添加你的社交媒体链接，主题会自动生成好看的图标
+  [params.socialIcons]
+    [params.socialIcons.github]
+      name = "GitHub"
+      url = "https://github.com/your-github-id" # 【重要】换成你的 GitHub 地址
+    [params.socialIcons.email]
+      name = "Email"
+      url = "mailto:your-email@example.com" # 【重要】换成你的邮箱
+    # 你可以添加更多，比如 twitter, zhihu, bilibili 等，具体支持哪些请参考 PaperMod 文档
+
+# ------------------------------------------------------
+# 网站菜单配置
+# ------------------------------------------------------
+
+[menu]
+  # 这是配置网站右上角的主导航菜单
+  [[menu.main]]
+    identifier = "posts"
+    name = "📚 文章"  # 菜单显示的名字
+    url = "/posts/" # 菜单链接的地址
+    weight = 10     # 菜单顺序，数字越小越靠前
+
+  [[menu.main]]
+    identifier = "tags"
+    name = "🏷️ 标签"
+    url = "/tags/"
+    weight = 20
+
+  [[menu.main]]
+    identifier = "archives"
+    name = "🗄️ 归档"
+    url = "/archives/"
+    weight = 30
+
+  [[menu.main]]
+    identifier = "about"
+    name = "🧑‍💻 关于我"
+    url = "/about/"
+    weight = 40
+
+# ------------------------------------------------------
+# Hugo 对 Markdown 的渲染配置 (可选，但推荐)
+# ------------------------------------------------------
+
+[markup]
+  [markup.highlight]
+    # 代码高亮配置
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    style = "dracula" # 代码高亮主题，可选：monokai, dracula, github 等
