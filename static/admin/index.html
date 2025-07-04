@@ -4,13 +4,32 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>内容管理后台 (Sveltia CMS)</title>
-  
-  <script src="https://unpkg.com/@sveltia/cms@latest/dist/sveltia-cms.js" defer></script>
 </head>
 <body>
-  <!-- 这部分保持不变 -->
+  <!-- 这里是空的，我们将用下面的脚本来动态加载和初始化CMS -->
+
   <script>
-    SveltiaCMS.init();
+    // 1. 创建一个新的 <script> 元素
+    const sveltiaScript = document.createElement('script');
+
+    // 2. 设置它的源文件地址
+    sveltiaScript.src = 'https://unpkg.com/@sveltia/cms@latest/dist/sveltia-cms.js';
+
+    // 3. (最关键的一步) 添加一个 onload 事件监听器。
+    //    这个函数内的代码，只会在 sveltia-cms.js 文件被完全下载和解析后才会执行。
+    sveltiaScript.onload = function() {
+      // 现在，我们可以 100% 确定 SveltiaCMS 这个对象已经存在了。
+      console.log('Sveltia CMS script has successfully loaded. Initializing...');
+      SveltiaCMS.init();
+    };
+
+    // 4. (可选但推荐) 添加一个错误处理器，以便在脚本加载失败时看到明确的错误信息。
+    sveltiaScript.onerror = function() {
+      console.error('Fatal Error: Could not load the Sveltia CMS script from CDN. Please check your internet connection, or if any browser extension (like Ad-blocker) is blocking unpkg.com.');
+    };
+
+    // 5. 将这个创建好的 <script> 元素添加到页面的 <head> 中，这会启动它的下载过程。
+    document.head.appendChild(sveltiaScript);
   </script>
 </body>
 </html>
