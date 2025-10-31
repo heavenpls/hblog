@@ -5,9 +5,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>My First Post | HBlog</title>
+<title>Spring MVC 中 @Async 与 HttpServletRequest共存引发的NullPointerException解析 | HBlog</title>
 <meta name="keywords" content="">
-<meta name="description" content="这是一个测试摘要信息">
+<meta name="description" content="在Spring MVC应用中，同时在方法中使用@Async注解和HttpServletRequest参数，会导致NullPointerException">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/my-first-post/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.9ed48e8c88f913512f0a05ec40bc44a93f1eba3d9379039b0f5a78381a66238f.css" integrity="sha256-ntSOjIj5E1EvCgXsQLxEqT8euj2TeQObD1p4OBpmI48=" rel="preload stylesheet" as="style">
@@ -109,9 +109,9 @@
   <header class="post-header">
     
     <h1 class="post-title entry-hint-parent">
-      My First Post
+      Spring MVC 中 @Async 与 HttpServletRequest共存引发的NullPointerException解析
     </h1>
-    <div class="post-meta"><span title='2025-10-30 17:53:14 +0800 CST'>2025-10-30 17:53</span>&nbsp;·&nbsp;约 4 分钟
+    <div class="post-meta"><span title='2025-10-30 17:53:14 +0800 CST'>2025-10-30 17:53</span>&nbsp;·&nbsp;约 2 分钟
 
 </div>
   </header> 
@@ -119,251 +119,122 @@
     <details class="post-summary" >
       <summary>摘要</summary>
       <div class="post-summary__content">
-        这是一个测试摘要信息
+        在Spring MVC应用中，同时在方法中使用@Async注解和HttpServletRequest参数，会导致NullPointerException
       </div>
     </details>
   </div>
-  <div class="post-content"><h2 id="测试页面">测试页面<a hidden class="anchor" aria-hidden="true" href="#测试页面">#</a></h2>
-<h3 id="111">111<a hidden class="anchor" aria-hidden="true" href="#111">#</a></h3>
-<h4 id="333">333<a hidden class="anchor" aria-hidden="true" href="#333">#</a></h4>
-<p>1111111111</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">computXolRiskData</span>(GcRiClaimVo gcRiClaimVo, GrXTtySectResVo grXTtySectResVo, List<span style="color:#f92672">&lt;</span>GcRiClaimXTty<span style="color:#f92672">&gt;</span> oldGcRiClaimXTtyList, List<span style="color:#f92672">&lt;</span>GcRiClaimXTtyVo<span style="color:#f92672">&gt;</span> gcRiClaimXTtyList, Map<span style="color:#f92672">&lt;</span>String, BigDecimal<span style="color:#f92672">&gt;</span> map) <span style="color:#66d9ef">throws</span> Exception {
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 币别进行兑换</span>
-</span></span><span style="display:flex;"><span>		BigDecimal exrate <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">getExchangeRate</span>(grXTtySectResVo.<span style="color:#a6e22e">getCurrency</span>(), gcRiClaimVo.<span style="color:#a6e22e">getRicurrency</span>(), <span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">null</span>);
-</span></span><span style="display:flex;"><span>		BigDecimal excessLoss <span style="color:#f92672">=</span> grXTtySectResVo.<span style="color:#a6e22e">getExcessLoss</span>();<span style="color:#75715e">// 起赔额</span>
-</span></span><span style="display:flex;"><span>		BigDecimal contQuota <span style="color:#f92672">=</span> grXTtySectResVo.<span style="color:#a6e22e">getContQuota</span>();<span style="color:#75715e">// 层高</span>
-</span></span><span style="display:flex;"><span>		BigDecimal curtotLimit <span style="color:#f92672">=</span> grXTtySectResVo.<span style="color:#a6e22e">getCurtotLimit</span>();<span style="color:#75715e">// 当前层总限额</span>
-</span></span><span style="display:flex;"><span>		BigDecimal alreadyPaid <span style="color:#f92672">=</span> BigDecimal.<span style="color:#a6e22e">ZERO</span>;<span style="color:#75715e">//已经出帐的金额，前次再保已决赔款汇总 更新时点：出账时 取Sum（出过账的RIPaid）</span>
-</span></span><span style="display:flex;"><span>		BigDecimal paid <span style="color:#f92672">=</span> BigDecimal.<span style="color:#a6e22e">ZERO</span>;<span style="color:#75715e">// 应摊回赔款</span>
-</span></span><span style="display:flex;"><span>		BigDecimal paidChg <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>		BigDecimal retenPaid <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>		BigDecimal osReserve <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>		BigDecimal osReserveChg <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>		BigDecimal grossIncurred <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>		BigDecimal retenGrossIncurred <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>		BigDecimal grossIncurredChg <span style="color:#f92672">=</span> BigDecimal.<span style="color:#a6e22e">ZERO</span>;
-</span></span><span style="display:flex;"><span>		String preXolNo <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>		Date preTime <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>		BigDecimal oldPaidEffective <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+  <div class="post-content"><p>在构建响应迅速的 Web 应用程序时，Spring框架的 @Async 注解是一个强大的工具，它允许我们将耗时操作（如文件处理、邮件发送、调用第三方API）放入后台线程执行，从而避免阻塞主请求处理线程。然而，一个常见的陷阱在使用 @Async 的同时，尝试直接访问 HttpServletRequest 对象，这往往会导致一个难以追踪的 NullPointerException。</p>
+<p>本文将深入探讨此问题的根源，并提供一套清晰、有效的解决方案和最佳实践。</p>
+<h2 id="问题重现一个典型的错误场景">问题重现：一个典型的错误场景<a hidden class="anchor" aria-hidden="true" href="#问题重现一个典型的错误场景">#</a></h2>
+<p>让我们从一个简单的代码示例开始，这个场景直接地展示了问题所在。假设我们有一个控制器方法，它尝试在一个异步服务中记录用户的IP地址。</p>
+<p>**错误的代码示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RestController</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserController</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		Map<span style="color:#f92672">&lt;</span>String, BigDecimal<span style="color:#f92672">&gt;</span> mapAmount <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">getClaimAmount</span>(gcRiClaimVo, grXTtySectResVo.<span style="color:#a6e22e">getCurrency</span>());
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 自留已决</span>
-</span></span><span style="display:flex;"><span>		retenPaid <span style="color:#f92672">=</span> mapAmount.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;retenPaid&#34;</span>);
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 自留毛损失</span>
-</span></span><span style="display:flex;"><span>		retenGrossIncurred <span style="color:#f92672">=</span> mapAmount.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;retenGrossIncurred&#34;</span>);
-</span></span><span style="display:flex;"><span>		BigDecimal osExrate <span style="color:#f92672">=</span> mapAmount.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;osExrate&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> LoggingService loggingService;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		Boolean b <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;<span style="color:#75715e">// 是否用层累积限额</span>
-</span></span><span style="display:flex;"><span>		Boolean isNotice <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;<span style="color:#75715e">// 是否用于通知书</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span>(<span style="color:#e6db74">&#34;/register&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">registerUser</span>(HttpServletRequest request) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ... 用户注册逻辑 ...</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//1.计算限额</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> curtotLimit) {
-</span></span><span style="display:flex;"><span>			b <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
-</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 合约限额-已经出帐生成分摊信息的金额</span>
-</span></span><span style="display:flex;"><span>			curtotLimit <span style="color:#f92672">=</span> curtotLimit.<span style="color:#a6e22e">subtract</span>(map.<span style="color:#a6e22e">get</span>(grXTtySectResVo.<span style="color:#a6e22e">getTtyId</span>()));
-</span></span><span style="display:flex;"><span>		} <span style="color:#66d9ef">else</span> {
-</span></span><span style="display:flex;"><span>			curtotLimit <span style="color:#f92672">=</span> contQuota;
-</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 异步记录访问信息</span>
+</span></span><span style="display:flex;"><span>        loggingService.<span style="color:#a6e22e">logUserAccess</span>(request);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		GcRiClaimXTty oldGcRiClaimXTty <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> oldGcRiClaimXTtyList <span style="color:#f92672">&amp;&amp;</span> oldGcRiClaimXTtyList.<span style="color:#a6e22e">size</span>() <span style="color:#f92672">&gt;</span> 0) {
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> (GcRiClaimXTty g : oldGcRiClaimXTtyList) {
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span>(g.<span style="color:#a6e22e">getCurrentVerInd</span>()){
-</span></span><span style="display:flex;"><span>					preXolNo <span style="color:#f92672">=</span> g.<span style="color:#a6e22e">getXolNo</span>();
-</span></span><span style="display:flex;"><span>					preTime <span style="color:#f92672">=</span> g.<span style="color:#a6e22e">getTransDate</span>();
-</span></span><span style="display:flex;"><span>					alreadyPaid <span style="color:#f92672">=</span> g.<span style="color:#a6e22e">getAlreadyPaid</span>();
-</span></span><span style="display:flex;"><span>					<span style="color:#75715e">// 计算有效上期已决：若已出账但未新建版本（billInd=&#39;1&#39;），用 paid - modiPaid；否则用 paid</span>
-</span></span><span style="display:flex;"><span>					oldPaidEffective <span style="color:#f92672">=</span> g.<span style="color:#a6e22e">getPaid</span>() <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> BigDecimal.<span style="color:#a6e22e">ZERO</span> : g.<span style="color:#a6e22e">getPaid</span>();
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">if</span> (<span style="color:#e6db74">&#34;1&#34;</span>.<span style="color:#a6e22e">equals</span>(g.<span style="color:#a6e22e">getBillInd</span>())) {
-</span></span><span style="display:flex;"><span>						BigDecimal oldModi <span style="color:#f92672">=</span> g.<span style="color:#a6e22e">getModiPaid</span>() <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> BigDecimal.<span style="color:#a6e22e">ZERO</span> : g.<span style="color:#a6e22e">getModiPaid</span>();
-</span></span><span style="display:flex;"><span>						oldPaidEffective <span style="color:#f92672">=</span> oldPaidEffective.<span style="color:#a6e22e">subtract</span>(oldModi);
-</span></span><span style="display:flex;"><span>						<span style="color:#66d9ef">if</span> (oldPaidEffective.<span style="color:#a6e22e">compareTo</span>(BigDecimal.<span style="color:#a6e22e">ZERO</span>) <span style="color:#f92672">&lt;</span> 0) {
-</span></span><span style="display:flex;"><span>							oldPaidEffective <span style="color:#f92672">=</span> BigDecimal.<span style="color:#a6e22e">ZERO</span>;
-</span></span><span style="display:flex;"><span>						}
-</span></span><span style="display:flex;"><span>					}
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">if</span>(b) {
-</span></span><span style="display:flex;"><span>						curtotLimit <span style="color:#f92672">=</span> curtotLimit.<span style="color:#a6e22e">add</span>(oldPaidEffective).<span style="color:#a6e22e">add</span>(g.<span style="color:#a6e22e">getAlreadyPaid</span>() <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> BigDecimal.<span style="color:#a6e22e">ZERO</span> : g.<span style="color:#a6e22e">getAlreadyPaid</span>());
-</span></span><span style="display:flex;"><span>					}
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">if</span>(<span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> g.<span style="color:#a6e22e">getModExcessloss</span>()) {
-</span></span><span style="display:flex;"><span>						excessLoss <span style="color:#f92672">=</span> g.<span style="color:#a6e22e">getModExcessloss</span>();
-</span></span><span style="display:flex;"><span>					}
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">if</span>(<span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> g.<span style="color:#a6e22e">getModcontQuota</span>()) {
-</span></span><span style="display:flex;"><span>						contQuota <span style="color:#f92672">=</span> g.<span style="color:#a6e22e">getModcontQuota</span>();
-</span></span><span style="display:flex;"><span>						<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>b) {
-</span></span><span style="display:flex;"><span>							curtotLimit <span style="color:#f92672">=</span> contQuota;
-</span></span><span style="display:flex;"><span>						}
-</span></span><span style="display:flex;"><span>					}
-</span></span><span style="display:flex;"><span>					oldGcRiClaimXTty <span style="color:#f92672">=</span> g;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;注册成功，正在处理您的请求...&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LoggingService</span> {
 </span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Async</span> <span style="color:#75715e">// 标记为异步方法</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">logUserAccess</span>(HttpServletRequest request) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 模拟耗时操作</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            Thread.<span style="color:#a6e22e">sleep</span>(2000);
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (InterruptedException e) {
+</span></span><span style="display:flex;"><span>            e.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (curtotLimit.<span style="color:#a6e22e">compareTo</span>(BigDecimal.<span style="color:#a6e22e">ZERO</span>) <span style="color:#f92672">&gt;</span> 0) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 问题所在：当代码执行到这里时，&#39;request&#39; 对象很可能是 null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 这将抛出 NullPointerException</span>
+</span></span><span style="display:flex;"><span>        String ipAddress <span style="color:#f92672">=</span> request.<span style="color:#a6e22e">getRemoteAddr</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;用户访问IP: &#34;</span> <span style="color:#f92672">+</span> ipAddress);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>  
+</span></span></code></pre></div><p>当 /register 端点被调用时，程序会在 request.getRemoteAddr() 这一行抛出 NullPointerException。为什么会这样呢？</p>
+<h2 id="根源剖析线程上下文的鸿沟">根源剖析：线程上下文的鸿沟<a hidden class="anchor" aria-hidden="true" href="#根源剖析线程上下文的鸿沟">#</a></h2>
+<p>要理解这个异常，我们必须深入了解 HttpServletRequest 的生命周期和 @Async 的工作机制。</p>
+<h3 id="1-httpservletrequest-的线程绑定特性">1. HttpServletRequest 的线程绑定特性<a hidden class="anchor" aria-hidden="true" href="#1-httpservletrequest-的线程绑定特性">#</a></h3>
+<p>当一个 HTTP 请求到达您的应用服务器（如Tomcat）时，服务器会从其线程池中取出一个工作线程来专门处理这个请求。整个请求的生命周期，包括 HttpServletRequest 和 HttpServletResponse 对象的创建和管理，都与这个<strong>原始工作线程</strong>紧密绑定。</p>
+<p>Spring MVC 通过 RequestContextHolder 类，使用 ThreadLocal 变量来管理请求上下文。ThreadLocal 保证了在同一个线程内，任何地方都可以方便地获取到当前的 HttpServletRequest 对象，但它的作用域也<strong>仅限于当前线程</strong>。</p>
+<h3 id="2-async-的执行模型">2. @Async 的执行模型<a hidden class="anchor" aria-hidden="true" href="#2-async-的执行模型">#</a></h3>
+<p>当您的代码调用一个被 @Async 注解标记的方法时，Spring AOP 会拦截这个调用。它不会立即在当前线程（即原始的请求处理线程）中执行该方法，而是将这个方法调用作为一个任务提交给一个独立的<strong>后台线程池</strong> (TaskExecutor)。</p>
+<p>原始的请求处理线程在提交任务后便会立即返回，继续执行后续代码（在我们的例子中，就是向用户返回 &ldquo;注册成功&rdquo; 的消息），并将 HttpServletRequest 等对象销毁，最后将自身交还给服务器的线程池。</p>
+<h3 id="3-两者交汇异常的诞生">3. 两者交汇：异常的诞生<a hidden class="anchor" aria-hidden="true" href="#3-两者交汇异常的诞生">#</a></h3>
+<p>现在，我们将这两个概念结合起来：</p>
+<ol>
+<li><strong>原始线程</strong>处理 /register 请求，它持有 HttpServletRequest 的引用。</li>
+<li>调用 loggingService.logUserAccess(request) 时，@Async 生效。</li>
+<li>Spring 将 logUserAccess 方法的执行任务提交给<strong>另一个后台线程</strong>。</li>
+<li>原始线程几乎立刻就完成了它的工作，HttpServletRequest 对象随之被销毁或变为不可访问状态。</li>
+<li>与此同时，后台线程开始执行 logUserAccess 方法。当它试图访问传入的 request 参数时，由于它所在的线程上下文中根本不存在这个ThreadLocal变量，或者原始对象已被回收，因此它得到的是一个 null 引用。</li>
+</ol>
+<blockquote>
+<p><strong>一个形象的比喻</strong>：
+这就像你在前台（原始线程）把你的身份证（HttpServletRequest）递给一个服务员（@Async方法）。服务员拿着你的身份证号（引用），转身走进一个独立的办公室（后台线程）去处理业务。但在他开始处理之前，你已经办完事离开，并且前台销毁了你的所有临时信息。当服务员在办公室里想根据身份证号查找你的详细信息时，发现信息库里已经空空如也，从而导致操作失败。</p></blockquote>
+<h2 id="解决方案与最佳实践">解决方案与最佳实践<a hidden class="anchor" aria-hidden="true" href="#解决方案与最佳实践">#</a></h2>
+<p>解决这个问题的核心原则非常简单：<strong>在跨越线程边界之前，提取所有需要的数据。</strong> 永远不要将 HttpServletRequest 或 HttpServletResponse 这样与请求线程强绑定的对象直接传递给异步方法。</p>
+<h3 id="正确的做法先提取后传递">正确的做法：先提取，后传递<a hidden class="anchor" aria-hidden="true" href="#正确的做法先提取后传递">#</a></h3>
+<p>修改我们的代码，在调用异步方法之前，从 HttpServletRequest 中提取出我们需要的信息（例如IP地址），然后将这个信息作为普通的Java对象（如 String）传递过去。</p>
+<p><strong>修正后的代码示例：</strong></p>
+<p>code Javadownloadcontent_copyexpand_less</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RestController</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserController</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 层高大于合约限额，则取合约限额计算</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (curtotLimit.<span style="color:#a6e22e">compareTo</span>(contQuota) <span style="color:#f92672">&lt;</span> 0) {
-</span></span><span style="display:flex;"><span>				contQuota <span style="color:#f92672">=</span> curtotLimit;
-</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> LoggingService loggingService;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 判断自留是否超过起赔额</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (retenPaid.<span style="color:#a6e22e">compareTo</span>(excessLoss) <span style="color:#f92672">&gt;</span> 0) {
-</span></span><span style="display:flex;"><span>				LOG.<span style="color:#a6e22e">debug</span>(<span style="color:#e6db74">&#34;------自留：&#34;</span> <span style="color:#f92672">+</span> retenPaid <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;大于起赔点：&#34;</span> <span style="color:#f92672">+</span> excessLoss <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;------&#34;</span>);
-</span></span><span style="display:flex;"><span>				paid <span style="color:#f92672">=</span> retenPaid.<span style="color:#a6e22e">subtract</span>(excessLoss);
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (paid.<span style="color:#a6e22e">compareTo</span>(contQuota) <span style="color:#f92672">&gt;</span> 0) {
-</span></span><span style="display:flex;"><span>					paid <span style="color:#f92672">=</span> contQuota;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span>(<span style="color:#e6db74">&#34;/register&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">registerUser</span>(HttpServletRequest request) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ... 用户注册逻辑 ...</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		grossIncurred <span style="color:#f92672">=</span> retenGrossIncurred.<span style="color:#a6e22e">subtract</span>(excessLoss);
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (grossIncurred.<span style="color:#a6e22e">compareTo</span>(contQuota) <span style="color:#f92672">&gt;</span> 0) {
-</span></span><span style="display:flex;"><span>			grossIncurred <span style="color:#f92672">=</span> contQuota;
-</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 1. 在调用异步方法前，从 request 对象中提取所需数据</span>
+</span></span><span style="display:flex;"><span>        String ipAddress <span style="color:#f92672">=</span> request.<span style="color:#a6e22e">getRemoteAddr</span>();
+</span></span><span style="display:flex;"><span>        String userAgent <span style="color:#f92672">=</span> request.<span style="color:#a6e22e">getHeader</span>(<span style="color:#e6db74">&#34;User-Agent&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//2.计算是否生成数据</span>
-</span></span><span style="display:flex;"><span>		GrXTtyLayerResVo grXTtyLayer <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">requestGrXTtyLayer</span>(grXTtySectResVo.<span style="color:#a6e22e">getTtyId</span>(), grXTtySectResVo.<span style="color:#a6e22e">getSectId</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 2. 将提取出的具体数据（而不是整个request对象）作为参数传递</span>
+</span></span><span style="display:flex;"><span>        loggingService.<span style="color:#a6e22e">logUserAccess</span>(ipAddress, userAgent);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//1. riversion作为轨迹版本号</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//2.进入超赔合约后，gcriclaimxtty.osReserve，版本号加1</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//4.gcriclaimxtty.grossIncurredchg取gcriclaimxtty.grossIncurred的变化量</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//5.生成帐单后，新插一条数据，paid=上一版本paid-上一版本modipaid，modipaid=paid</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//自留估损-层起赔点和层高取小</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;注册成功，正在处理您的请求...&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span>(<span style="color:#66d9ef">null</span> <span style="color:#f92672">==</span> oldGcRiClaimXTty <span style="color:#f92672">&amp;&amp;</span> grossIncurred.<span style="color:#a6e22e">compareTo</span>(BigDecimal.<span style="color:#a6e22e">ZERO</span>) <span style="color:#f92672">&lt;=</span> 0) {
-</span></span><span style="display:flex;"><span>			BigDecimal base <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1&#34;</span>.<span style="color:#a6e22e">equals</span>(grXTtyLayer.<span style="color:#a6e22e">getLayerNo</span>()) <span style="color:#f92672">?</span> <span style="color:#66d9ef">new</span> BigDecimal(0.<span style="color:#a6e22e">75</span>) : <span style="color:#66d9ef">new</span> BigDecimal(1);
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (retenGrossIncurred.<span style="color:#a6e22e">compareTo</span>(excessLoss.<span style="color:#a6e22e">multiply</span>(base)) <span style="color:#f92672">&gt;=</span> 0){
-</span></span><span style="display:flex;"><span>				grossIncurred <span style="color:#f92672">=</span> BigDecimal.<span style="color:#a6e22e">ZERO</span>;
-</span></span><span style="display:flex;"><span>				isNotice <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LoggingService</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span>(<span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> oldGcRiClaimXTty <span style="color:#f92672">&amp;&amp;</span> grossIncurred.<span style="color:#a6e22e">compareTo</span>(BigDecimal.<span style="color:#a6e22e">ZERO</span>) <span style="color:#f92672">&lt;</span> 0) {
-</span></span><span style="display:flex;"><span>			grossIncurred <span style="color:#f92672">=</span> BigDecimal.<span style="color:#a6e22e">ZERO</span>;
-</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Async</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">logUserAccess</span>(String ipAddress, String userAgent) { <span style="color:#75715e">// 接收具体的字符串参数</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 模拟耗时操作</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            Thread.<span style="color:#a6e22e">sleep</span>(2000);
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (InterruptedException e) {
+</span></span><span style="display:flex;"><span>            e.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		GcRiClaimXTtyVo gcRiClaimXTty <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>		String updateType <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1&#34;</span>;
-</span></span><span style="display:flex;"><span>		Boolean isC <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;<span style="color:#75715e">//是否生成新数据</span>
-</span></span><span style="display:flex;"><span>		Boolean isUp <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;<span style="color:#75715e">//是否更新旧数据</span>
-</span></span><span style="display:flex;"><span>		osReserve <span style="color:#f92672">=</span> grossIncurred.<span style="color:#a6e22e">subtract</span>(alreadyPaid);
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span>(paid.<span style="color:#a6e22e">compareTo</span>(BigDecimal.<span style="color:#a6e22e">ZERO</span>) <span style="color:#f92672">&lt;</span> 0) {
-</span></span><span style="display:flex;"><span>			paid <span style="color:#f92672">=</span> BigDecimal.<span style="color:#a6e22e">ZERO</span>;
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>		paid <span style="color:#f92672">=</span> paid.<span style="color:#a6e22e">subtract</span>(alreadyPaid);
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span>(grossIncurred.<span style="color:#a6e22e">compareTo</span>(BigDecimal.<span style="color:#a6e22e">ZERO</span>) <span style="color:#f92672">&gt;</span> 0 <span style="color:#f92672">||</span> (<span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> oldGcRiClaimXTty <span style="color:#f92672">&amp;&amp;</span> grossIncurred.<span style="color:#a6e22e">compareTo</span>(BigDecimal.<span style="color:#a6e22e">ZERO</span>) <span style="color:#f92672">==</span> 0)
-</span></span><span style="display:flex;"><span>				<span style="color:#f92672">||</span> (<span style="color:#f92672">!</span>isNotice <span style="color:#f92672">&amp;&amp;</span> grossIncurred.<span style="color:#a6e22e">compareTo</span>(BigDecimal.<span style="color:#a6e22e">ZERO</span>) <span style="color:#f92672">==</span> 0)) {
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span>(<span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> oldGcRiClaimXTty) {
-</span></span><span style="display:flex;"><span>				gcRiClaimXTty <span style="color:#f92672">=</span> Pages.<span style="color:#a6e22e">convert</span>(oldGcRiClaimXTty, GcRiClaimXTtyVo.<span style="color:#a6e22e">class</span>);
-</span></span><span style="display:flex;"><span>				BigDecimal oldGrossIncurred <span style="color:#f92672">=</span> oldGcRiClaimXTty.<span style="color:#a6e22e">getGrossIncurred</span>() <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> BigDecimal.<span style="color:#a6e22e">ZERO</span> : oldGcRiClaimXTty.<span style="color:#a6e22e">getGrossIncurred</span>();
-</span></span><span style="display:flex;"><span>				BigDecimal oldAlready <span style="color:#f92672">=</span> oldGcRiClaimXTty.<span style="color:#a6e22e">getAlreadyPaid</span>() <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> BigDecimal.<span style="color:#a6e22e">ZERO</span> : oldGcRiClaimXTty.<span style="color:#a6e22e">getAlreadyPaid</span>();
-</span></span><span style="display:flex;"><span>				BigDecimal oldOsReserveEffective <span style="color:#f92672">=</span> oldGrossIncurred.<span style="color:#a6e22e">subtract</span>(oldAlready);
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (oldOsReserveEffective.<span style="color:#a6e22e">compareTo</span>(BigDecimal.<span style="color:#a6e22e">ZERO</span>) <span style="color:#f92672">&lt;</span> 0) {
-</span></span><span style="display:flex;"><span>					oldOsReserveEffective <span style="color:#f92672">=</span> BigDecimal.<span style="color:#a6e22e">ZERO</span>;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				osReserveChg <span style="color:#f92672">=</span> osReserve.<span style="color:#a6e22e">subtract</span>(oldOsReserveEffective);
-</span></span><span style="display:flex;"><span>				grossIncurredChg <span style="color:#f92672">=</span> grossIncurred.<span style="color:#a6e22e">subtract</span>(oldGcRiClaimXTty.<span style="color:#a6e22e">getGrossIncurred</span>());
-</span></span><span style="display:flex;"><span>				paidChg <span style="color:#f92672">=</span> paid.<span style="color:#a6e22e">subtract</span>(oldPaidEffective <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> BigDecimal.<span style="color:#a6e22e">ZERO</span> : oldPaidEffective);
-</span></span><span style="display:flex;"><span>				<span style="color:#75715e">//估损有变化，生成一条新数据</span>
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span>(osReserveChg.<span style="color:#a6e22e">compareTo</span>(BigDecimal.<span style="color:#a6e22e">ZERO</span>) <span style="color:#f92672">!=</span> 0) {
-</span></span><span style="display:flex;"><span>					isC <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
-</span></span><span style="display:flex;"><span>					isUp <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
-</span></span><span style="display:flex;"><span>				} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(paid.<span style="color:#a6e22e">compareTo</span>(oldPaidEffective <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> BigDecimal.<span style="color:#a6e22e">ZERO</span> : oldPaidEffective) <span style="color:#f92672">!=</span> 0) {
-</span></span><span style="display:flex;"><span>					isC <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
-</span></span><span style="display:flex;"><span>					<span style="color:#75715e">//估损没有变化赔付有变化更新本数据，未出帐，则先删后插，已出帐，则插数</span>
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span><span style="color:#e6db74">&#34;1&#34;</span>.<span style="color:#a6e22e">equals</span>(oldGcRiClaimXTty.<span style="color:#a6e22e">getBillInd</span>())) {
-</span></span><span style="display:flex;"><span>						grossIncurredChg <span style="color:#f92672">=</span> grossIncurredChg.<span style="color:#a6e22e">add</span>(oldGcRiClaimXTty.<span style="color:#a6e22e">getGrossIncurredChg</span>());
-</span></span><span style="display:flex;"><span>						paidChg <span style="color:#f92672">=</span> paidChg.<span style="color:#a6e22e">add</span>(oldGcRiClaimXTty.<span style="color:#a6e22e">getPaidChg</span>());
-</span></span><span style="display:flex;"><span>						updateType <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2&#34;</span>;
-</span></span><span style="display:flex;"><span>						gcRiClaimXTtyDao.<span style="color:#a6e22e">deleteById</span>(oldGcRiClaimXTty.<span style="color:#a6e22e">getRiClaimXTtyId</span>());
-</span></span><span style="display:flex;"><span>					} <span style="color:#66d9ef">else</span> {
-</span></span><span style="display:flex;"><span>						LOG.<span style="color:#a6e22e">debug</span>(<span style="color:#e6db74">&#34;估损没有变化赔付有变化更新本数据&#34;</span> <span style="color:#f92672">+</span> paid.<span style="color:#a6e22e">subtract</span>(oldGcRiClaimXTty.<span style="color:#a6e22e">getPaid</span>()));
-</span></span><span style="display:flex;"><span>						isUp <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
-</span></span><span style="display:flex;"><span>					}
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span>(isUp) {
-</span></span><span style="display:flex;"><span>					gcRiClaimXTty.<span style="color:#a6e22e">setRiVersion</span>(oldGcRiClaimXTty.<span style="color:#a6e22e">getRiVersion</span>() <span style="color:#f92672">+</span> 1);
-</span></span><span style="display:flex;"><span>					gcRiClaimXTty.<span style="color:#a6e22e">setXolNo</span>(<span style="color:#66d9ef">null</span>);
-</span></span><span style="display:flex;"><span>					FieldUtils.<span style="color:#a6e22e">setAllVoValue</span>(oldGcRiClaimXTty, <span style="color:#e6db74">&#34;2&#34;</span>, <span style="color:#e6db74">&#34;system&#34;</span>);
-</span></span><span style="display:flex;"><span>					oldGcRiClaimXTty.<span style="color:#a6e22e">setCurrentVerInd</span>(<span style="color:#66d9ef">false</span>);
-</span></span><span style="display:flex;"><span>					gcRiClaimXTtyDao.<span style="color:#a6e22e">updateById</span>(oldGcRiClaimXTty);
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>			} <span style="color:#66d9ef">else</span> {
-</span></span><span style="display:flex;"><span>				isC <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
-</span></span><span style="display:flex;"><span>				gcRiClaimXTty <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GcRiClaimXTtyVo();
-</span></span><span style="display:flex;"><span>                gcRiClaimXTty.<span style="color:#a6e22e">setRetentionRate</span>(grXTtySectResVo.<span style="color:#a6e22e">getRetentionRate</span>());
-</span></span><span style="display:flex;"><span>				gcRiClaimXTty.<span style="color:#a6e22e">setTtyCode</span>(grXTtyLayer.<span style="color:#a6e22e">getTtyCode</span>());
-</span></span><span style="display:flex;"><span>				gcRiClaimXTty.<span style="color:#a6e22e">setClaimNo</span>(gcRiClaimVo.<span style="color:#a6e22e">getClaimNo</span>());
-</span></span><span style="display:flex;"><span>				gcRiClaimXTty.<span style="color:#a6e22e">setRiVersion</span>(1);
-</span></span><span style="display:flex;"><span>				gcRiClaimXTty.<span style="color:#a6e22e">setTtyId</span>(grXTtySectResVo.<span style="color:#a6e22e">getTtyId</span>());
-</span></span><span style="display:flex;"><span>				gcRiClaimXTty.<span style="color:#a6e22e">setTtySectId</span>(grXTtySectResVo.<span style="color:#a6e22e">getSectId</span>());
-</span></span><span style="display:flex;"><span>				grossIncurredChg <span style="color:#f92672">=</span> grossIncurred;
-</span></span><span style="display:flex;"><span>				paidChg <span style="color:#f92672">=</span> paid;
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		LOG.<span style="color:#a6e22e">debug</span>(<span style="color:#e6db74">&#34;------是否生成新数据：&#34;</span> <span style="color:#f92672">+</span> isC <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; grossIncurred：&#34;</span> <span style="color:#f92672">+</span> grossIncurred <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;；paid：&#34;</span> <span style="color:#f92672">+</span> paid<span style="color:#f92672">+</span><span style="color:#e6db74">&#34; excessLoss：&#34;</span> <span style="color:#f92672">+</span>excessLoss<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;os:&#34;</span><span style="color:#f92672">+</span>grossIncurred.<span style="color:#a6e22e">subtract</span>(alreadyPaid));
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (isC) {
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setOsExchange</span>(osExrate);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setRiClaimXTtyId</span>(Tools.<span style="color:#a6e22e">getId</span>());
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setRenPrem</span>(<span style="color:#66d9ef">null</span>);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setModiRenPrem</span>(<span style="color:#66d9ef">null</span>);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setAlreadyPaid</span>(alreadyPaid);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setOsReserve</span>(osReserve);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setPaid</span>(paid);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setModiPaid</span>(paid);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setPaidChg</span>(paidChg);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setGenBillNo</span>(<span style="color:#66d9ef">null</span>);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setCurrentVerInd</span>(<span style="color:#66d9ef">true</span>);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setGrossIncurred</span>(grossIncurred);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setGrossIncurredChg</span>(grossIncurredChg);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setBillInd</span>(<span style="color:#e6db74">&#34;0&#34;</span>);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setRiCurrency</span>(grXTtySectResVo.<span style="color:#a6e22e">getCurrency</span>());
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setRiExchange</span>(exrate);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setReportDate</span>(<span style="color:#66d9ef">new</span> Date());
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setTtyType</span>(grXTtyLayer.<span style="color:#a6e22e">getnPrpType</span>());
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setTransDate</span>(gcRiClaimVo.<span style="color:#a6e22e">getCreateTime</span>());
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setPreXolNo</span>(preXolNo);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setPreTime</span>(preTime);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setSaveFlag</span>(isNotice);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setGrXTtyLayerResVo</span>(grXTtyLayer);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setGrXTtySectResVo</span>(grXTtySectResVo);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setDeductible</span>(excessLoss);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setContQuota</span>(contQuota);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setGrossOsReserve</span>(mapAmount.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;grossOsReserve&#34;</span>));
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setGrossPaid</span>(mapAmount.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;grossPaid&#34;</span>));
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setNetPaid</span>(retenPaid);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			FieldUtils.<span style="color:#a6e22e">setAllVoValue</span>(gcRiClaimXTty, updateType, <span style="color:#e6db74">&#34;system&#34;</span>);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setCreateTime</span>(gcRiClaimVo.<span style="color:#a6e22e">getUpdateTime</span>());
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">ableXolRiskPrintData</span>(gcRiClaimXTty, gcRiClaimVo);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// ableXolRiskPrintData 基于 retentionRate 调整了 paid，这里据最终 paid 重算 shareRate 与 paidChg</span>
-</span></span><span style="display:flex;"><span>			BigDecimal finalPaid <span style="color:#f92672">=</span> gcRiClaimXTty.<span style="color:#a6e22e">getPaid</span>();
-</span></span><span style="display:flex;"><span>			BigDecimal shareRate <span style="color:#f92672">=</span> retenPaid.<span style="color:#a6e22e">compareTo</span>(BigDecimal.<span style="color:#a6e22e">ZERO</span>) <span style="color:#f92672">==</span> 0 <span style="color:#f92672">?</span> BigDecimal.<span style="color:#a6e22e">ZERO</span> : finalPaid.<span style="color:#a6e22e">divide</span>(retenPaid, 8, BigDecimal.<span style="color:#a6e22e">ROUND_HALF_UP</span>).<span style="color:#a6e22e">multiply</span>(BigDecimal.<span style="color:#a6e22e">valueOf</span>(100));
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setShareRate</span>(shareRate);
-</span></span><span style="display:flex;"><span>			BigDecimal finalPaidChg <span style="color:#f92672">=</span> (oldGcRiClaimXTty <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) <span style="color:#f92672">?</span> finalPaid.<span style="color:#a6e22e">subtract</span>(oldPaidEffective <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> BigDecimal.<span style="color:#a6e22e">ZERO</span> : oldPaidEffective) : finalPaid;
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (<span style="color:#e6db74">&#34;2&#34;</span>.<span style="color:#a6e22e">equals</span>(updateType) <span style="color:#f92672">&amp;&amp;</span> oldGcRiClaimXTty <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
-</span></span><span style="display:flex;"><span>				finalPaidChg <span style="color:#f92672">=</span> finalPaidChg.<span style="color:#a6e22e">add</span>(oldGcRiClaimXTty.<span style="color:#a6e22e">getPaidChg</span>());
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>			gcRiClaimXTty.<span style="color:#a6e22e">setPaidChg</span>(finalPaidChg);
-</span></span><span style="display:flex;"><span>			gcRiClaimXTtyList.<span style="color:#a6e22e">add</span>(gcRiClaimXTty);
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (b) {
-</span></span><span style="display:flex;"><span>				<span style="color:#75715e">// 限额累计使用最终的 paid</span>
-</span></span><span style="display:flex;"><span>				paid <span style="color:#f92672">=</span> finalPaid;
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span>(<span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> oldGcRiClaimXTty <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span><span style="color:#e6db74">&#34;1&#34;</span>.<span style="color:#a6e22e">equals</span>(oldGcRiClaimXTty.<span style="color:#a6e22e">getBillInd</span>())) {
-</span></span><span style="display:flex;"><span>					paid <span style="color:#f92672">=</span> paid.<span style="color:#a6e22e">subtract</span>(oldGcRiClaimXTty.<span style="color:#a6e22e">getPaid</span>());
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#75715e">// 限额更新，加赔付变化量</span>
-</span></span><span style="display:flex;"><span>				map.<span style="color:#a6e22e">put</span>(grXTtySectResVo.<span style="color:#a6e22e">getTtyId</span>(), map.<span style="color:#a6e22e">get</span>(grXTtySectResVo.<span style="color:#a6e22e">getTtyId</span>()).<span style="color:#a6e22e">add</span>(paid));
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>	}
-</span></span></code></pre></div>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 现在可以安全地使用这些从原始线程传递过来的数据了</span>
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;用户访问IP: &#34;</span> <span style="color:#f92672">+</span> ipAddress);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;User-Agent: &#34;</span> <span style="color:#f92672">+</span> userAgent);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>  
+</span></span></code></pre></div><p>如果需要传递的数据较多，可以封装成一个简单的DTO（Data Transfer Object）对象，这样能让代码更加整洁。</p>
+<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>@Async 和 HttpServletRequest 的组合使用是 Spring Web 开发中的一个经典 &ldquo;gotcha&rdquo;。导致 NullPointerException 的根本原因在于二者截然不同的生命周期和线程模型：HttpServletRequest 强绑定于原始请求线程，而 @Async 会将执行切换到一个独立的后台线程。</p>
+<p>遵循**“在同步代码中提取数据，将普通对象传递给异步代码”**这一黄金法则，可以让你在享受异步编程带来的性能优势的同时，有效避免此类线程安全问题，写出健壮、可靠的应用程序。</p>
+
 
   </div>
 
@@ -377,15 +248,20 @@
   <ul>
     <li>
       <ul>
-        <li><a href="#测试页面">测试页面</a>
+        <li><a href="#问题重现一个典型的错误场景">问题重现：一个典型的错误场景</a></li>
+        <li><a href="#根源剖析线程上下文的鸿沟">根源剖析：线程上下文的鸿沟</a>
           <ul>
-            <li><a href="#111">111</a>
-              <ul>
-                <li><a href="#333">333</a></li>
-              </ul>
-            </li>
+            <li><a href="#1-httpservletrequest-的线程绑定特性">1. HttpServletRequest 的线程绑定特性</a></li>
+            <li><a href="#2-async-的执行模型">2. @Async 的执行模型</a></li>
+            <li><a href="#3-两者交汇异常的诞生">3. 两者交汇：异常的诞生</a></li>
           </ul>
         </li>
+        <li><a href="#解决方案与最佳实践">解决方案与最佳实践</a>
+          <ul>
+            <li><a href="#正确的做法先提取后传递">正确的做法：先提取，后传递</a></li>
+          </ul>
+        </li>
+        <li><a href="#总结">总结</a></li>
       </ul>
     </li>
   </ul>
