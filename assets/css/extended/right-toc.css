@@ -1,0 +1,65 @@
+/* Layout wrapper: create a right column for the toc on wide screens */
+.single-with-aside {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: var(--gap);
+  align-items: start;
+}
+
+/* Sticky right toc */
+.right-toc {
+  position: sticky;
+  top: calc(var(--header-height) + var(--gap));
+  align-self: start;
+  max-height: calc(100vh - var(--header-height) - var(--gap) * 2);
+  overflow: auto;
+  background: var(--entry);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 10px;
+}
+
+.right-toc__title {
+  font-size: 14px;
+  color: var(--secondary);
+  margin: 4px 8px 8px;
+}
+
+.right-toc__inner nav#TableOfContents {
+  margin: 0;
+}
+
+.right-toc__inner ul {
+  list-style: none;
+  padding-inline-start: 0;
+  margin: 0;
+}
+
+.right-toc__inner li {
+  margin: 2px 0;
+}
+
+/* Indentation levels for hierarchy */
+.right-toc__inner ul ul { margin-inline-start: 12px; }
+.right-toc__inner ul ul ul { margin-inline-start: 12px; }
+.right-toc__inner ul ul ul ul { margin-inline-start: 12px; }
+
+.right-toc a {
+  display: block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--secondary);
+}
+
+.right-toc a:hover {
+  color: var(--primary);
+  background: var(--code-bg);
+}
+
+/* Responsive: hide on smaller screens */
+@media screen and (max-width: 1200px) {
+  .single-with-aside { grid-template-columns: 1fr; }
+  .right-toc { display: none; }
+}
+
+

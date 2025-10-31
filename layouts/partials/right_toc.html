@@ -1,0 +1,12 @@
+{{- /* Right-side sticky table of contents for single pages */ -}}
+{{- if .TableOfContents -}}
+<aside class="right-toc" aria-label="{{ i18n "toc" | default "目录" }}">
+  <div class="right-toc__title">{{ i18n "toc" | default "目录" }}</div>
+  {{- /* Use Hugo-generated nested list; limit via markup.tableOfContents */ -}}
+  <div class="right-toc__inner">
+    {{ .TableOfContents }}
+  </div>
+</aside>
+{{- end -}}
+
+

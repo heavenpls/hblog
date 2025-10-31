@@ -1,0 +1,67 @@
+/* Make home list entries feel more dimensional while keeping PaperMod minimalism */
+
+/* Base card enhancements */
+
+.post-entry {
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background-color .18s ease;
+  /* subtler, softer shadow for light theme */
+  box-shadow: 0 1px 3px rgb(0 0 0 / 5%), 0 4px 12px rgb(0 0 0 / 6%);
+  /* tighter vertical rhythm, comfortable horizontal padding */
+  padding: 12px 18px;
+  border-radius: 12px;
+  overflow: hidden; /* ensure cover images respect the radius */
+}
+
+.post-entry:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 8%), 0 14px 36px rgb(0 0 0 / 6%);
+}
+
+/* Dark theme tuning: stronger ambient shadow, slightly clearer border */
+.dark .post-entry {
+  /* darker ambient, but still restrained */
+  box-shadow: 0 1px 3px rgb(0 0 0 / 35%), 0 6px 18px rgb(0 0 0 / 24%);
+  border-color: var(--tertiary);
+}
+
+.dark .post-entry:hover {
+  box-shadow: 0 8px 22px rgb(0 0 0 / 34%), 0 16px 44px rgb(0 0 0 / 28%);
+}
+
+/* Slight media zoom on cover for depth */
+.post-entry .entry-cover img {
+  transition: transform .35s ease;
+}
+
+.post-entry:hover .entry-cover img {
+  transform: scale(1.015);
+}
+
+/* Hero/first entry gets a touch more elevation */
+.first-entry {
+  box-shadow: 0 4px 16px rgb(0 0 0 / 8%), 0 12px 32px rgb(0 0 0 / 6%);
+  /* make hero card visually smaller and align content to top */
+  justify-content: flex-start;
+  min-height: 0;
+  padding: 16px 22px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.dark .first-entry {
+  box-shadow: 0 4px 16px rgb(0 0 0 / 32%), 0 12px 40px rgb(0 0 0 / 28%);
+}
+
+/* Slightly smaller hero title for better balance */
+.first-entry .entry-header h1 {
+  font-size: 28px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-entry,
+  .first-entry,
+  .post-entry .entry-cover img { transition: none; }
+  .post-entry:hover { transform: none; }
+}
+
+

@@ -1,0 +1,28 @@
+/* Wrap long code lines to avoid horizontal scrolling in posts */
+.post-content pre,
+.post-content pre code,
+.post-content .highlight pre,
+.post-content .chroma pre,
+.post-content .chroma code {
+  white-space: pre-wrap;       /* preserve indentation, allow wrapping */
+  word-break: break-word;      /* break long tokens */
+  overflow-wrap: anywhere;     /* as a last resort */
+}
+
+/* Ensure no horizontal scrollbar for code element */
+.post-content pre,
+.post-content pre code {
+  overflow-x: hidden;
+}
+
+/* Rounded corners for code blocks and their containers */
+.post-content pre,
+.post-content .highlight,
+.post-content .highlight pre,
+.post-content .chroma,
+.post-content .chroma pre {
+  border-radius: var(--radius);
+  overflow: hidden; /* clip background and inner scrollbars to radius */
+}
+
+

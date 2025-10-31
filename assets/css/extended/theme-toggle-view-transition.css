@@ -1,0 +1,7 @@
+/* Disable default cross-fade; we'll drive the animation via JS */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+

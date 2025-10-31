@@ -1,0 +1,43 @@
+.post-summary-wrapper {
+  margin: var(--content-gap) 0;
+}
+
+.post-summary {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--entry);
+  box-shadow: none;
+}
+
+.post-summary > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.post-summary > summary::-webkit-details-marker {
+  display: none;
+}
+
+.post-summary > summary::before {
+  content: "▸";
+  color: var(--secondary);
+  transition: transform .2s ease;
+}
+
+.post-summary[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.post-summary__content {
+  padding: 0 16px 16px;
+  color: var(--content);
+}
+
+

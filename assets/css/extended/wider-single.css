@@ -1,0 +1,25 @@
+/* Widen only single post pages (body without .list) */
+body:not(.list) .main {
+  /* base wider width for desktops */
+  --main-width: 860px;
+}
+
+@media screen and (min-width: 1200px) {
+  body:not(.list) .main {
+    --main-width: 920px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  body:not(.list) .main {
+    --main-width: 1000px;
+  }
+}
+
+@media screen and (min-width: 1680px) {
+  body:not(.list) .main {
+    --main-width: 1080px;
+  }
+}
+
+

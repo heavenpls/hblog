@@ -1,0 +1,10 @@
+- id: post_summary
+  translation: "摘要"
+
+
+# Override PaperMod's default Chinese reading time to use "约 x 分钟"
+- id: read_time
+  translation:
+    one: "约 1 分钟"
+    other: "约 {{ .Count }} 分钟"
+

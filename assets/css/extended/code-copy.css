@@ -1,0 +1,56 @@
+/* Reposition and beautify PaperMod's built-in copy buttons */
+.copy-code {
+  right: 8px !important;
+  left: auto !important;
+  top: 8px !important;
+  z-index: 2;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 10px;
+  background: rgba(78, 78, 78, 0.85);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
+  font-size: 0; /* visually hide theme's text labels */
+}
+
+.dark .copy-code {
+  background: rgba(90, 90, 90, 0.85);
+}
+
+.copy-code.is-success {
+  /* use theme primary for a restrained success state */
+  background: var(--primary);
+  color: #fff;
+  border-color: rgba(255,255,255,0.15);
+}
+
+/* icon visuals */
+.copy-code::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  /* clipboard icon (Feather copy) */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='9' y='9' width='13' height='13' rx='2' ry='2'></rect><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path></svg>");
+}
+
+.copy-code.is-success::before {
+  /* check icon */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+}
+
+/* larger tap target on touch devices */
+@media (pointer: coarse) {
+  .copy-code { width: 40px; height: 40px; border-radius: 12px; top: 10px !important; right: 10px !important; left: auto !important; }
+  .copy-code::before { width: 20px; height: 20px; background-size: 20px 20px; }
+}
+
+

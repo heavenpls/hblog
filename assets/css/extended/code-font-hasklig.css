@@ -1,0 +1,45 @@
+/* Hasklig for code blocks only */
+
+/*
+Place Hasklig font files in: static/fonts/hasklig/
+Recommended minimal set (TTF preferred on web when WOFF/WOFF2 are unavailable):
+ - Hasklig-Regular.ttf
+ - Hasklig-Bold.ttf
+Optional (if available):
+ - Hasklig-Italic.ttf
+ - Hasklig-BoldItalic.ttf
+If you only have OTF, you can use Hasklig-Regular.otf / Hasklig-Bold.otf instead.
+*/
+
+@font-face {
+  font-family: "Hasklig";
+  src: url("/fonts/hasklig/Hasklig-Regular.ttf") format("truetype"),
+       url("/fonts/hasklig/Hasklig-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Hasklig";
+  src: url("/fonts/hasklig/Hasklig-Bold.ttf") format("truetype"),
+       url("/fonts/hasklig/Hasklig-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Apply Hasklig to code contexts */
+.post-content pre,
+.post-content pre code,
+.post-content code,
+.post-content .chroma,
+.post-content .chroma code,
+.post-content .highlight,
+.post-content .highlight code {
+  font-family: "Hasklig", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "DejaVu Sans Mono", "Fira Code", "JetBrains Mono", monospace;
+  font-variant-ligatures: contextual;
+  font-feature-settings: "liga" 1, "calt" 1;
+}
+
+

@@ -1,0 +1,21 @@
+baseURL = 'https://example.org/'
+languageCode = 'zh-cn'
+defaultContentLanguage = 'zh'
+title = 'HBlog'
+theme = "PaperMod" 
+
+[languages]
+  [languages.zh]
+    languageName = '简体中文'
+    weight = 1
+
+[params]
+  ShowReadingTime = true
+  DateFormat = "2006-01-02 15:04"
+  ShowRightToc = true
+  ShowCodeCopyButtons = true
+
+[markup]
+  [markup.tableOfContents]
+    startLevel = 1
+    endLevel = 4

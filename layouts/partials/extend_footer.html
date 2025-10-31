@@ -1,0 +1,87 @@
+<script>
+  (function () {
+    var toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+
+    var DURATION = 500; // ms
+
+    function applyTheme(toDark) {
+      if (toDark) {
+        document.body.classList.add('dark');
+        localStorage.setItem('pref-theme', 'dark');
+      } else {
+        document.body.classList.remove('dark');
+        localStorage.setItem('pref-theme', 'light');
+      }
+    }
+
+    function runViewTransition(e) {
+      var toDark = !document.body.classList.contains('dark');
+
+      // Fallback when View Transitions or reduced motion is active
+      if (!document.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        applyTheme(toDark);
+        return;
+      }
+
+      // Click coordinates (fallback to toggle center)
+      var rect = toggle.getBoundingClientRect();
+      var x = (e && e.clientX) ? e.clientX : Math.round(rect.left + rect.width / 2);
+      var y = (e && e.clientY) ? e.clientY : Math.round(rect.top + rect.height / 2);
+
+      var endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+
+      var transition = document.startViewTransition(function () {
+        applyTheme(toDark);
+      });
+
+      transition.ready.then(function () {
+        var clipKeyframes = [
+          { clipPath: 'circle(0px at ' + x + 'px ' + y + 'px)' },
+          { clipPath: 'circle(' + endRadius + 'px at ' + x + 'px ' + y + 'px)' }
+        ];
+        var timing = { duration: DURATION, easing: 'ease-out', pseudoElement: '::view-transition-new(root)' };
+        document.documentElement.animate(clipKeyframes, timing);
+      });
+    }
+
+    function onClick(e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+      runViewTransition(e);
+    }
+
+    // Capture phase to override theme's default handler timing
+    toggle.addEventListener('click', onClick, true);
+  })();
+</script>
+
+
+<script>
+  // Add a brief cooldown and success style for copy-code buttons
+  (function () {
+    document.addEventListener('click', function (e) {
+      var btn = e.target;
+      if (!btn || !btn.classList || !btn.classList.contains('copy-code')) return;
+
+      // prevent rapid re-copy
+      if (btn.dataset.cooldown === '1') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+
+      // next lines allow the theme's built-in copy handler to run
+      btn.dataset.cooldown = '1';
+      btn.classList.add('is-success');
+      btn.style.pointerEvents = 'none';
+      setTimeout(function () {
+        btn.dataset.cooldown = '0';
+        btn.classList.remove('is-success');
+        btn.style.pointerEvents = '';
+      }, 2000);
+    });
+  })();
+</script>
+
